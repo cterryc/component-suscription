@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import styles from "./SubscriptionBox.module.css";
 
 const SubscriptionContainer = styled.div`
   max-width: 600px;
@@ -10,6 +11,7 @@ const SubscriptionContainer = styled.div`
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   text-align: center;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
 `;
 
 const Title = styled.h2`
@@ -109,9 +111,11 @@ const SubscriptionBox = () => {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState(null);
   const [message, setMessage] = useState("");
+  const [loader, setLoader] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoader(true);
 
     // Validación simple del email
     if (!email || !/^[\w.-]+@gmail\.com$/.test(email)) {
@@ -131,6 +135,7 @@ const SubscriptionBox = () => {
           body: JSON.stringify({ email }),
         }
       );
+      setLoader(false);
 
       const data = await response.json();
 
@@ -171,6 +176,12 @@ const SubscriptionBox = () => {
         Suscríbete con tu <strong>Gmail</strong> y recibe todas nuestras
         novedades y promociones exclusivas.
       </Subtitle>
+
+      {loader && (
+        <div className={styles.scaleUpCenter}>
+          <span className={styles.loader}></span>
+        </div>
+      )}
 
       <Form onSubmit={handleSubmit}>
         <Input
